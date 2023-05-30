@@ -33,14 +33,14 @@ public class ClienteResource {
     @GetMapping(value = "/{id}")
     public ResponseEntity<ClienteDTO> findById(@PathVariable Integer id) {
         Cliente obj = service.findById(id);
-        return ResponseEntity.status(HttpStatus.FOUND).body(new ClienteDTO(obj));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ClienteDTO(obj));
     }
 
     @GetMapping
     public ResponseEntity<List<ClienteDTO>> findAll() {
         List<Cliente> list = service.findAll();
         List<ClienteDTO> listdto = list.stream().map(obj -> new ClienteDTO(obj)).collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.FOUND).body(listdto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(listdto);
     }
 
     @PostMapping
