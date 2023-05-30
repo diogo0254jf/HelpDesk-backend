@@ -34,14 +34,14 @@ public class TecnicoResource {
     @GetMapping(value = "/{id}")
     public ResponseEntity<TecnicoDTO> findById(@PathVariable Integer id) {
         Tecnico obj = service.findById(id);
-        return ResponseEntity.status(HttpStatus.FOUND).body(new TecnicoDTO(obj));
+        return ResponseEntity.status(HttpStatus.OK).body(new TecnicoDTO(obj));
     }
 
     @GetMapping
     public ResponseEntity<List<TecnicoDTO>> findAll() {
         List<Tecnico> list = service.findAll();
         List<TecnicoDTO> listdto = list.stream().map(obj -> new TecnicoDTO(obj)).collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.FOUND).body(listdto);
+        return ResponseEntity.status(HttpStatus.OK).body(listdto);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
