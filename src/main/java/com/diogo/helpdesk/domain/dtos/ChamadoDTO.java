@@ -136,4 +136,5 @@ public class ChamadoDTO implements Serializable {
 	public void setNomeCliente(String nomeCliente) {
 		this.nomeCliente = nomeCliente;
 	}
+
 }

@@ -17,141 +17,130 @@ import javax.persistence.Id;
 
 import com.diogo.helpdesk.domain.enums.Perfil;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public abstract class Pessoa implements Serializable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	protected Integer id;
+	protected String nome;
+	
+	@Column(unique = true)
+	protected String cpf;
+	
+	@Column(unique = true)
+	protected String email;
+	protected String senha;
+	
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "PERFIS")
+	protected Set<Integer> perfis = new HashSet<>();
+	
+	@JsonFormat(pattern = "dd/MM/yyyy")
+	protected LocalDate dataCriacao = LocalDate.now();
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
-    protected String nome;
+	public Pessoa() {
+		super();
+		addPerfil(Perfil.CLIENTE);
+	}
 
-    @Column(unique = true)
-    protected String cpf;
+	public Pessoa(Integer id, String nome, String cpf, String email, String senha) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.cpf = cpf;
+		this.email = email;
+		this.senha = senha;
+		addPerfil(Perfil.CLIENTE);
+	}
 
-    @Column(unique = true)
-    protected String email;
-    protected String senha;
+	public Integer getId() {
+		return id;
+	}
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "PERFIS")
-    protected Set<Integer> perfis = new HashSet<>();
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    protected LocalDate dataCriacao = LocalDate.now();
-    
-    @JsonIgnore
-    private Tecnico tecnico;
-    // private Cliente cliente;
+	public String getNome() {
+		return nome;
+	}
 
-    public Pessoa() {
-        addPerfil(Perfil.CLIENTE);
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public Pessoa(Integer id, String nome, String cpf, String email, String senha) {
-        this.id = id;
-        this.nome = nome;
-        this.cpf = cpf;
-        this.email = email;
-        this.senha = senha;
-        addPerfil(Perfil.CLIENTE);
-    }
+	public String getCpf() {
+		return cpf;
+	}
 
-    public Pessoa(String nome, String cpf, String email, String senha) {
-        this.nome = nome;
-        this.cpf = cpf;
-        this.email = email;
-        this.senha = senha;
-        addPerfil(Perfil.CLIENTE);
-    }
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public String getSenha() {
+		return senha;
+	}
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
 
-    public String getCpf() {
-        return cpf;
-    }
+	public Set<Perfil> getPerfis() {
+		return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
+	}
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
+	public void addPerfil(Perfil perfil) {
+		this.perfis.add(perfil.getCod());
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public LocalDate getDataCriacao() {
+		return dataCriacao;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setDataCriacao(LocalDate dataCriacao) {
+		this.dataCriacao = dataCriacao;
+	}
 
-    public String getSenha() {
-        return senha;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cpf == null) ? 0 : cpf.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
 
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public Set<Perfil> getPerfis() {
-        return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
-    }
-
-    public void addPerfil(Perfil perfil) {
-        this.perfis.add(perfil.getCod());
-    }
-
-    public LocalDate getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(LocalDate dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((cpf == null) ? 0 : cpf.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Pessoa other = (Pessoa) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (cpf == null) {
-            if (other.cpf != null)
-                return false;
-        } else if (!cpf.equals(other.cpf))
-            return false;
-        return true;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Pessoa other = (Pessoa) obj;
+		if (cpf == null) {
+			if (other.cpf != null)
+				return false;
+		} else if (!cpf.equals(other.cpf))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
 
 }
